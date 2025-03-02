@@ -157,13 +157,11 @@ git push origin --delete hotfix/緊急問題
 
 ```shell
 sudo mkdir -p /opt/tata/eurekaservice
-sudo mkdir -p /opt/tata/app
-sudo chown -R ubuntu:ubuntu /opt/tata/app
 ```
 
 ### **2️⃣ 部署 JAR 文件**
 
-將 eurekaservice.jar 放入 /app/
+將 eurekaservice.jar 放入 /opt/tata/eurekaservice
 
 ### **3️⃣ 建立 Dockerfile**
 
@@ -183,12 +181,18 @@ FROM eclipse-temurin:21-jre-alpine
 # 設定工作目錄
 WORKDIR /app
 
-# 複製 JAR 檔案
+# 將 JAR 檔案複製到容器中
 COPY eurekaserver-*.jar /app/
 
+# 列出 /app/ 目錄，確認 JAR 是否成功複製
+RUN ls -la /app/
+
 # 找出最新的 JAR 檔案，並建立符號連結
-RUN latest_jar=$(ls -t /app/eurekaserver-*.jar | head -n1) && \
-    ln -sf "$(basename "$latest_jar")" /app/eurekaservice.jar
+RUN set -e && \
+    latest_jar=$(ls -t /app/eurekaserver-*.jar | head -n1) && \
+    echo "Latest JAR: $latest_jar" && \
+    ln -sf "$latest_jar" /app/eurekaservice.jar && \
+    echo "Created symlink to $latest_jar as eurekaservice.jar"
 
 # 設定啟動指令
 CMD ["java", "-jar", "/app/eurekaservice.jar"]
@@ -210,5 +214,5 @@ docker run -di --name=eurekaservice -p 8761:8761 eurekaservice
 ### **6️⃣ 確認服務啟動是否正常**
 
 ```shell
-docker logs -f --tail 1000 eureka-service
+docker logs -f --tail 1000 eurekaservice
 ```
