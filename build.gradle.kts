@@ -5,7 +5,18 @@ plugins {
 }
 
 group = "com.acenexus.tata"
-version = "0.0.1"
+
+// 讀取 Git Tag 作為 version，沒有 Tag 時預設為 0.0.1-SNAPSHOT
+val gitVersion: String by lazy {
+    try {
+        val process = ProcessBuilder("git", "describe", "--tags", "--abbrev=0").start()
+        process.inputStream.bufferedReader().readText().trim()
+    } catch (e: Exception) {
+        "0.0.1-SNAPSHOT"
+    }
+}
+
+version = gitVersion
 
 java {
     toolchain {
