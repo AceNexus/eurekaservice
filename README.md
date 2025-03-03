@@ -128,14 +128,17 @@ git push origin --delete hotfix/問題
 ### **6️⃣ 精簡工作流程：發布新版本**
 
 ```bash
-# 1. 從 develop 合併到 main
-git checkout main
+# 1. 確保在 develop 並更新代碼
+git checkout develop
 git pull
-git merge develop
 
-# 2. 打版本標籤
-git tag -a v0.1.0 -m "發布 v0.1.0"
+# 2. 合併到 main
+git checkout main
+git merge develop
 git push
+
+# 3. 打版本標籤並推送
+git tag v0.1.0 -m "發布 v0.1.0"
 git push --tags
 ```
 
