@@ -26,128 +26,126 @@
 
 ## **🌱 Git Flow 開發流程**
 
-- Git Flow 是一種 Git 工作流程，提供結構化的分支管理，確保**開發**、**測試**、**正式**環境的**穩定**與**可控**
+- Git Flow 是一種結構化的 Git 工作流程，它提供完善的分支管理，確保開發、測試和正式環境的穩定性與可控性
 
-### **1️⃣ 分支**
+### **1️⃣ 分支策略：精簡工作流程 vs. 完整工作流程**
 
-- **main（正式環境）**
-    - 最終穩定版的正式分支
-    - **僅** 在版本穩定後，才會從 `staging` 合併，並標記版本（tag）
-    - **不直接** 在此分支開發
+| 團隊類型       | 分支名稱      | 角色   | 主要用途      | 合併來源                   | 合併目標      |
+|------------|-----------|------|-----------|------------------------|-----------|
+| **精簡工作流程** | `main`    | 正式環境 | 最終穩定版     | `develop`              | -         |
+|            | `develop` | 開發環境 | 日常開發      | `feature/*`、`bugfix/*` | `main`    |
+| **完整工作流程** | `main`    | 正式環境 | 最終穩定版     | `staging`              | -         |
+|            | `staging` | 測試環境 | 測試開發完成的功能 | `develop`              | `main`    |
+|            | `develop` | 開發環境 | 日常開發      | `feature/*`、`bugfix/*` | `staging` |
 
-- **staging（測試環境）**
-    - 用於測試開發完成的功能
-    - 功能開發完成後，從 `develop` 合併至 `staging` 進行測試
-    - 測試通過後，才會合併到 `main` 進行正式部署
-
-- **develop（開發環境）**
-    - 日常開發的主要分支
-    - **新功能開發**（`feature/功能名稱`）與 **錯誤修復**（`bugfix/問題描述`）皆從 `develop` 分支建立
-    - 透過 **merge** 保持最新變更，確保開發內容同步
-
-### **2️⃣ 日常開發流程**
+### **2️⃣ 精簡工作流程：日常開發流程**
 
 ```bash
 # 1. 確保 develop 分支是最新的
 git checkout develop
-git pull origin develop
+git pull
 
 # 2. 創建功能分支
-git checkout -b feature/新功能名稱
+git checkout -b feature/新功能
 
 # 3. 進行開發工作並提交更改
 git add .
 git commit -m "[feat] 實現某功能"
 
-# 4. 與 develop 同步，避免合併衝突
+# 4. 推送功能分支
+git push -u origin feature/新功能
+
+# 5. 功能完成後，合併回 develop
 git checkout develop
-git pull origin develop
-git checkout feature/新功能名稱
-git merge develop
+git pull
+git merge feature/新功能
+git push
 
-# 5. 解決衝突後推送功能分支
-git push -u origin feature/新功能名稱
-
-# 6. 功能完成後，合併回 develop
-git checkout develop
-git pull origin develop
-git merge --no-ff feature/新功能名稱
-git push origin develop
-
-# 7. 刪除功能分支
-git branch -d feature/新功能名稱
-git push origin --delete feature/新功能名稱
+# 6. 刪除功能分支
+git branch -d feature/新功能
+git push origin --delete feature/新功能
 ```
 
-### **3️⃣ 準備測試流程**
+### **3️⃣ 精簡工作流程：測試流程**
 
 ```bash
-# 1. 將 develop 合併到 staging 進行測試
-git checkout staging
-git pull origin staging
+# 1. 從 develop 部署到測試環境
+git checkout develop
+git pull
 
-# 2. 合併開發分支內容
-git merge develop
-
-# 3. 解決衝突並推送
-git push origin staging
-
-# 4. 在測試環境部署並進行測試
+# 2. 在測試環境部署並進行測試
 ```
 
-### **4️⃣ 部署到正式環境**
+### **4️⃣ 精簡工作流程：部署到正式環境**
 
 ```bash
-# 1. 測試通過後，將 staging 合併到 main
+# 1. 測試通過後，將 develop 合併到 main
 git checkout main
-git pull origin main
+git pull
 
-# 2. 合併測試環境內容
-git merge staging
+# 2. 合併開發環境內容
+git merge develop
 
 # 3. 為此版本打標籤
-git tag -a v0.0.1 -m "版本 0.0.1 發布"
+git tag -a v0.0.1 -m "版本 0.0.1"
 
 # 4. 推送到遠程倉庫
-git push origin main
-git push origin --tags
+git push
+git push --tags
 ```
 
-### **5️⃣ 緊急修復流程**
+### **5️⃣ 精簡工作流程：緊急修復流程**
 
 ```bash
 # 1. 從 main 創建緊急修復分支
 git checkout main
-git pull origin main
-git checkout -b hotfix/緊急問題
+git pull
+git checkout -b hotfix/問題
 
 # 2. 修復問題並提交
 git add .
-git commit -m "[fix] 修復某緊急問題"
+git commit -m "[fix] 修復問題"
 
 # 3. 合併到 main 並打標籤
 git checkout main
-git pull origin main
-git merge --no-ff hotfix/緊急問題
-git tag -a v0.0.1 -m "修復版本 0.0.1"
-git push origin main --tags
+git pull
+git merge hotfix/問題
+git tag -a v0.0.2 -m "修復版本"
+git push
+git push --tags
 
-# 4. 合併到 develop 確保修復也在開發版本中
+# 4. 合併到 develop
 git checkout develop
-git pull origin develop
-git merge --no-ff hotfix/緊急問題
-git push origin develop
+git pull
+git merge hotfix/問題
+git push
 
-# 5. 同步到 staging
-git checkout staging
-git pull origin staging
-git merge --no-ff hotfix/緊急問題
-git push origin staging
-
-# 6. 刪除緊急修復分支
-git branch -d hotfix/緊急問題
-git push origin --delete hotfix/緊急問題
+# 5. 刪除緊急修復分支
+git branch -d hotfix/問題
+git push origin --delete hotfix/問題
 ```
+
+### **6️⃣ 精簡工作流程：發布新版本**
+
+```bash
+# 1. 從 develop 合併到 main
+git checkout main
+git pull
+git merge develop
+
+# 2. 打版本標籤
+git tag -a v0.1.0 -m "發布 v0.1.0"
+git push
+git push --tags
+```
+
+### **7️⃣ 什麼時候該更新版本號？**
+
+| 版本變更      | 說明          | 例子              |
+|-----------|-------------|-----------------|
+| **MAJOR** | 破壞性變更，不相容舊版 | `1.0.0 → 2.0.0` |
+| **MINOR** | 新增功能，向下相容   | `1.1.0 → 1.2.0` |
+| **PATCH** | 修 bug，不影響功能 | `1.2.1 → 1.2.2` |
 
 ## **🚀 部署步驟**
 
@@ -172,37 +170,13 @@ sudo touch /opt/tata/eurekaservice/Dockerfile
 sudo chown -R ubuntu:ubuntu /opt/tata/eurekaservice/Dockerfile
 ```
 
-撰寫 Dockerfile
-
-```text
-# 使用 OpenJDK 21 slim 版，減少鏡像大小
-FROM eclipse-temurin:21-jre-alpine
-
-# 設定工作目錄
-WORKDIR /app
-
-# 將 JAR 檔案複製到容器中
-COPY eurekaserver-*.jar /app/
-
-# 列出 /app/ 目錄，確認 JAR 是否成功複製
-RUN ls -la /app/
-
-# 找出最新的 JAR 檔案，並建立符號連結
-RUN set -e && \
-    latest_jar=$(ls -t /app/eurekaserver-*.jar | head -n1) && \
-    echo "Latest JAR: $latest_jar" && \
-    ln -sf "$latest_jar" /app/eurekaservice.jar && \
-    echo "Created symlink to $latest_jar as eurekaservice.jar"
-
-# 設定啟動指令
-CMD ["java", "-jar", "/app/eurekaservice.jar"]
-```
+完整 Dockerfile 可參考 [doc/Dockerfile](doc/Dockerfile)
 
 ### **4️⃣ 建構 Docker 映像檔**
 
 ```shell
 cd /opt/tata/eurekaservice
-docker build -t eurekaservice .
+docker build --no-cache --progress=plain -t eurekaservice .
 ```
 
 ### **5️⃣ 啟動服務**
