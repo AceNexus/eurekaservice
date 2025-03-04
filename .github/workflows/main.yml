@@ -7,14 +7,16 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # 取得完整 Git history（預設只拉最新 Commit）
     
-    - name: Set up JDK
+    - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
         java-version: '21'
@@ -23,33 +25,5 @@ jobs:
     - name: Build JAR
       run: mvn clean package -DskipTests
     
-    - name: Configure SSH
-      uses: webfactory/ssh-agent@v0.7.0
-      with:
-        ssh-private-key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-    
-    - name: Deploy to EC2
-      env:
-        EC2_HOST: ${{ secrets.EC2_HOST }}
-      run: |
-        # 複製 JAR 文件到 EC2
-        scp -o StrictHostKeyChecking=no target/eurekaservice.jar ubuntu@$EC2_HOST:/opt/tata/eurekaservice/
-        
-        # SSH 到 EC2 執行部署腳本
-        ssh -o StrictHostKeyChecking=no ubuntu@$EC2_HOST << EOF
-          # 進入服務目錄
-          cd /opt/tata/eurekaservice
-          
-          # 停止並移除舊容器
-          docker stop eurekaservice || true
-          docker rm eurekaservice || true
-          
-          # 構建 Docker 映像
-          docker build --no-cache --progress=plain -t eurekaservice .
-          
-          # 啟動新容器
-          docker run -di --name=eurekaservice -p 8761:8761 eurekaservice
-          
-          # 查看日誌
-          docker logs -f --tail 100 eurekaservice
-        EOF
+    - name: Print Build Completion Message
+      run: echo "Build completed successfully!"
