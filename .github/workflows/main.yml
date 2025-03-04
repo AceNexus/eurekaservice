@@ -15,30 +15,70 @@ jobs:
 
     steps:
     - name: Checkout Repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # 確保完整 Git history
-    
+        fetch-depth: 0  
+
     - name: Set up JDK 21
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '21'
 
-    - name: Verify Project Structure
-      run: ls -al  # 確保 `pom.xml` 或 `build.gradle.kts` 存在
+    - name: Grant execute permission to Gradle wrapper
+      run: chmod +x gradlew
 
     - name: Build Project
-      run: ./gradlew build  # Kotlin 預設使用 Gradle
+      run: ./gradlew build 
 
     - name: Run Tests
-      run: ./gradlew test  # 執行測試
+      run: ./gradlew test  
 
-    - name: Upload JAR Artifact
-      uses: actions/upload-artifact@v3
+    - name: Get Gradle Version
+      run: echo "VERSION=$(./gradlew properties --quiet | grep '^version:' | awk '{print $2}')" >> $GITHUB_ENV
+
+    - name: Upload JAR Artifact with Version
+      uses: actions/upload-artifact@v4
       with:
-        name: spring-cloud-app-jar
-        path: build/libs/*.jar  # 上傳生成的 JAR 檔案
+        name: eurekaservice-jar
+        path: build/libs/*.jar
 
-    - name: Print Build Completion Message
-      run: echo "🎉 Build and test completed successfully!"
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: eurekaservice-jar  # 確保與上傳時的名稱一致
+        path: .
+
+    - name: List downloaded files (Debug)
+      run: ls -lR  # 確認 JAR 檔案是否下載成功
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USERNAME }}
+        key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        script: |
+          set -e
+          cd /opt/tata/eurekaservice/
+
+          # 停止並移除舊容器
+          docker stop eurekaservice || true
+          docker rm eurekaservice || true
+
+          # ✅ 直接從當前目錄傳輸 JAR
+          scp eurekaservice-jar/eurekaservice.jar ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/opt/tata/eurekaservice/
+
+          # 建立新的 Docker Image
+          docker build --no-cache -t eurekaservice .
+
+          # 啟動新容器
+          docker run -di --name=eurekaservice -p 8761:8761 eurekaservice
+
+          # 查看 Log
+          docker logs -f --tail 1000 eurekaservice
