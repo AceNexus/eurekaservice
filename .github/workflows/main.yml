@@ -65,5 +65,5 @@ jobs:
           scp ${{ github.workspace }}/artifacts/eurekaservice-*.jar /opt/tata/eurekaservice/
           
           # Build and run new Docker container
-          docker build -t eurekaservice .
+          docker build --no-cache --progress=plain -t eurekaservice .
           docker run -d --name eurekaservice -p 8761:8761 eurekaservice
