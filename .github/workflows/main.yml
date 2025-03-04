@@ -57,7 +57,7 @@ jobs:
     - name: List downloaded files (Debug)
       run: ls -lR  # 確認 JAR 檔案是否下載成功
 
-    - name: Copy JAR to EC2
+    - name: Deploy to EC2
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.EC2_HOST }}
@@ -71,8 +71,8 @@ jobs:
           docker stop eurekaservice || true
           docker rm eurekaservice || true
 
-          # 移動新的 JAR
-          mv ~/eurekaservice-jar/*.jar eurekaservice.jar
+          # ✅ 直接從當前目錄傳輸 JAR
+          scp eurekaservice-jar/eurekaservice.jar ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/opt/tata/eurekaservice/
 
           # 建立新的 Docker Image
           docker build --no-cache -t eurekaservice .
