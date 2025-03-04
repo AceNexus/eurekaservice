@@ -51,11 +51,11 @@ jobs:
     - name: Download Artifact
       uses: actions/download-artifact@v4
       with:
-        name: eurekaservice-jar  # 確保與上傳時的名稱一致
-        path: .
+        name: eurekaservice-jar-${{ env.VERSION }}
+        path: ./artifacts
 
-    - name: List downloaded files (Debug)
-      run: ls -lR  # 確認 JAR 檔案是否下載成功
+    - name: List downloaded files
+      run: ls -lR ./artifacts  # 確保檔案有下載
 
     - name: Deploy to EC2
       uses: appleboy/ssh-action@master
@@ -71,8 +71,11 @@ jobs:
           docker stop eurekaservice || true
           docker rm eurekaservice || true
 
-          # ✅ 直接從當前目錄傳輸 JAR
-          scp eurekaservice-jar/eurekaservice.jar ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/opt/tata/eurekaservice/
+          # 確保檔案存在
+          ls -l ./artifacts
+
+          # 複製新的 JAR
+          scp ./artifacts/eurekaservice-*.jar ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/opt/tata/eurekaservice/
 
           # 建立新的 Docker Image
           docker build --no-cache -t eurekaservice .
