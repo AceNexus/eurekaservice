@@ -4,31 +4,40 @@ on:
   push:
     branches:
       - develop
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - develop
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
+    - name: Checkout Repository
       uses: actions/checkout@v3
       with:
-        fetch-depth: 0  # 取得完整 Git history
-
+        fetch-depth: 0  # 確保完整 Git history
+    
     - name: Set up JDK 21
       uses: actions/setup-java@v3
       with:
-        java-version: '21'
         distribution: 'temurin'
+        java-version: '21'
 
     - name: Verify Project Structure
-      run: ls -al  # 確認 pom.xml 是否存在
+      run: ls -al  # 確保 `pom.xml` 或 `build.gradle.kts` 存在
 
-    - name: Build JAR
-      run: |
-        cd eurekaservice  # 如果 pom.xml 在子目錄，先切換過去
-        mvn clean package -DskipTests
+    - name: Build Project
+      run: ./gradlew build  # Kotlin 預設使用 Gradle
+
+    - name: Run Tests
+      run: ./gradlew test  # 執行測試
+
+    - name: Upload JAR Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: spring-cloud-app-jar
+        path: build/libs/*.jar  # 上傳生成的 JAR 檔案
 
     - name: Print Build Completion Message
-      run: echo "🎉 Build completed successfully!"
+      run: echo "🎉 Build and test completed successfully!"
