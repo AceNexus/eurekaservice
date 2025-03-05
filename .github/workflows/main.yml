@@ -88,3 +88,19 @@ jobs:
             
             # 啟動新容器
             docker run -d --name eurekaservice -p 8761:8761 eurekaservice || exit 1
+            
+            # 檢查容器是否正在運行
+            if [ "$(docker ps -q -f name=eurekaservice)" ]; then
+              echo "Container is running."
+            else
+              echo "Container is not running."
+              exit 1
+            fi
+
+            # 檢查端口是否正在監聽
+            if netstat -tuln | grep :8761; then
+              echo "Port 8761 is open."
+            else
+              echo "Port 8761 is not open."
+              exit 1
+            fi
