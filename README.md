@@ -43,58 +43,30 @@
 ```bash
 # 1. 確保 develop 分支是最新的
 git checkout develop
-git pull
+git pull origin develop
 
 # 2. 創建功能分支
 git checkout -b feature/新功能
 
-# 3. 進行開發工作並提交更改
+# 3. 進行開發並提交
 git add .
 git commit -m "[feat] 實現某功能"
 
 # 4. 推送功能分支
 git push -u origin feature/新功能
 
-# 5. 功能完成後，合併回 develop
+# 5. 在 GitHub 上創建 Pull Request，等待審查和批准
+
+# 6. 合併和清理
 git checkout develop
-git pull
-git merge feature/新功能
-git push
-
-# 6. 刪除功能分支
-git branch -d feature/新功能
-git push origin --delete feature/新功能
+git pull origin develop
+git merge --no-ff feature/新功能  # 保留分支歷史
+git push origin develop
+git branch -d feature/新功能  # 刪除本地功能分支
+git push origin --delete feature/新功能  # 刪除遠程功能分支
 ```
 
-### **3️⃣ 精簡工作流程：測試流程**
-
-```bash
-# 1. 從 develop 部署到測試環境
-git checkout develop
-git pull
-
-# 2. 在測試環境部署並進行測試
-```
-
-### **4️⃣ 精簡工作流程：部署到正式環境**
-
-```bash
-# 1. 測試通過後，將 develop 合併到 main
-git checkout main
-git pull
-
-# 2. 合併開發環境內容
-git merge develop
-
-# 3. 為此版本打標籤
-git tag -a v0.0.1 -m "版本 0.0.1"
-
-# 4. 推送到遠程倉庫
-git push
-git push --tags
-```
-
-### **5️⃣ 精簡工作流程：緊急修復流程**
+### **3️⃣ 精簡工作流程：緊急修復流程**
 
 ```bash
 # 1. 從 main 創建緊急修復分支
@@ -106,7 +78,7 @@ git checkout -b hotfix/問題
 git add .
 git commit -m "[fix] 修復問題"
 
-# 3. 合併到 main 並打標籤
+# 3. 合併到 main 後發 PR
 git checkout main
 git pull
 git merge hotfix/問題
@@ -125,6 +97,22 @@ git branch -d hotfix/問題
 git push origin --delete hotfix/問題
 ```
 
+### **4️⃣ 精簡工作流程：部署到正式環境**
+
+```bash
+# 1. 從 develop 分支發起 PR 到 main 分支，等待審查和批准
+
+# 2. 為此版本打標籤
+git tag -a v0.0.1 -m "版本 0.0.1"
+
+# 3. 推送到遠程倉庫
+git push origin --tags
+```
+
+### **5️⃣ 精簡工作流程：main.yml 用於定義 GitHub Actions**
+
+- [main.yml](.github%2Fworkflows%2Fmain.yml): 監聽新標籤事件，自動觸發持續部署流程
+
 ### **6️⃣ 什麼時候該更新版本號？**
 
 | 版本變更      | 說明          | 例子              |
@@ -137,7 +125,7 @@ git push origin --delete hotfix/問題
 
 ### **1️⃣ 建立資料夾**
 
-在伺服器上，建立存放 `Eureka Service` 的專用資料夾
+- 在伺服器上，建立存放 `Eureka Service` 的專用資料夾
 
 ```shell
 sudo mkdir -p /opt/tata/eurekaservice
