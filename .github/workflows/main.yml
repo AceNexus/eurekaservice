@@ -46,10 +46,11 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '21'
-    
-    - name: Download Artifact
+
+      - name: Download Artifact
       uses: actions/download-artifact@v4
       with:
+        name: eurekaservice-jar
         path: ./
     
     - name: Deploy JAR to EC2
@@ -58,7 +59,7 @@ jobs:
         host: ${{ secrets.EC2_HOST }}
         username: ${{ secrets.EC2_USERNAME }}
         key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        source: "./*.jar"
+        source: "./eurekaservice-*.jar"
         target: "/opt/tata/eurekaservice/"
     
     - name: Deploy and Run Docker Container
