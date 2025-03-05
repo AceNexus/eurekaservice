@@ -96,6 +96,9 @@ jobs:
             # 啟動新容器
             docker run -d --name eurekaservice -p 8761:8761 eurekaservice || exit 1
             
+            # 等待一段時間，讓容器和服務完全啟動
+            sleep 30
+  
             # 檢查容器是否正在運行
             if [ "$(docker ps -q -f name=eurekaservice)" ]; then
               echo "Container is running."

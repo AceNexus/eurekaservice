@@ -50,3 +50,7 @@ tasks.withType<Test> {
 tasks.withType<Jar> {
     archiveFileName.set("${project.name}-${project.version}.jar")
 }
+
+springBoot {
+    mainClass.set("com.acenexus.tata.EurekaServiceApplication")
+}
