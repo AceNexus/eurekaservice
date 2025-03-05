@@ -5,14 +5,14 @@ FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
 # 複製編譯後的 JAR 檔案到容器內
-COPY eurekaserver-*.jar /app/
+COPY eurekaservice-*.jar /app/
 
 # 確保 JAR 檔案已成功複製
 RUN ls -la /app/
 
 # 建立指向最新 JAR 檔案的符號連結，確保一致的啟動方式
 RUN set -e && \
-    latest_jar=$(ls -t /app/eurekaserver-*.jar | head -n1) && \
+    latest_jar=$(ls -t /app/eurekaservice-*.jar | head -n1) && \
     echo "Latest JAR: $latest_jar" && \
     ln -sf "$latest_jar" /app/eurekaservice.jar
 

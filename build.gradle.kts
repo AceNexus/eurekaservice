@@ -46,3 +46,7 @@ dependencyManagement {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+tasks.withType<Jar> {
+    archiveFileName.set("${project.name}-${project.version}.jar")
+}
