@@ -1,4 +1,4 @@
-package com.acenexus.tata.eurekaserver;
+package com.acenexus.tata.eurekaservice;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +13,10 @@ import org.springframework.stereotype.Component;
 
 @SpringBootApplication
 @EnableEurekaServer
-public class EurekaserverApplication {
+public class EurekaserviceApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(EurekaserverApplication.class, args);
+        SpringApplication.run(EurekaserviceApplication.class, args);
     }
 
     @Component
