@@ -87,9 +87,6 @@ jobs:
           # 確保 JAR 檔案已正確複製
           ls -l /opt/tata/eurekaservice/*.jar
           
-          # 重命名 JAR 文件以便 Dockerfile 使用
-          mv *.jar eurekaservice.jar
-          
           # 檢查 Dockerfile 是否存在
           if [ ! -f /opt/tata/eurekaservice/Dockerfile ]; then
             echo "Dockerfile not found"
