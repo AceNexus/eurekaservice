@@ -45,6 +45,12 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
     
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '21'
+    
     - name: Get Project Version
       id: get_version
       run: |
@@ -84,7 +90,7 @@ jobs:
           
           # 檢查 Dockerfile 是否存在，如果不存在則創建
           if [ ! -f Dockerfile ]; then
-            cat > Dockerfile << EOL
+            cat > Dockerfile << 'EOF'
 # 使用 OpenJDK 21（Alpine 版）作為基礎映像，體積較小且適合容器化部署
 FROM eclipse-temurin:21-jre-alpine
 
@@ -102,7 +108,7 @@ ENV SPRING_PROFILES_ACTIVE=develop
 
 # 以 Java 啟動應用程式
 CMD ["java", "-jar", "/app/eurekaservice.jar"]
-EOL
+EOF
           fi
           
           # 建立 Docker 映像
