@@ -19,5 +19,8 @@ RUN set -e && \
 # 設定 Spring Boot 啟動的環境變數，使用 "develop" 環境
 ENV SPRING_PROFILES_ACTIVE=develop
 
+# HOST 設定應用程式的主機位址
+ENV HOST=127.0.0.1
+
 # 以 Java 啟動應用程式
 CMD ["java", "-jar", "/app/eurekaservice.jar"]
