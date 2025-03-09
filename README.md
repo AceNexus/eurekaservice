@@ -66,7 +66,7 @@ git fetch origin
 git pull --rebase origin develop
 
 # 2. 創建功能分支
-git checkout -b 新功能
+git checkout -b YYYYMMDD-feature-新功能
 
 # 3. 進行開發並提交
 git add .
@@ -77,7 +77,7 @@ git fetch origin
 git rebase origin/develop  # 避免不必要的合併提交
 
 # 5. 推送功能分支
-git push -u origin feature-新功能
+git push -u origin YYYYMMDD-feature-新功能
 
 # 6. 在 GitHub 上建立 PR，請求合併到 develop 分支
 #    (這步驟需要在 GitHub 上手動操作)
@@ -88,8 +88,8 @@ git fetch origin
 git pull --rebase origin develop
 
 # 8. 刪除已合併的功能分支
-git branch -d feature/新功能
-git push origin --delete feature/新功能
+git branch -d YYYYMMDD-feature-新功能
+git push origin --delete YYYYMMDD-feature-新功能
 
 # 9. 確保 develop 最新後，開 PR 合併到 main
 #    (這步驟需要在 GitHub 上手動操作)
@@ -107,14 +107,14 @@ git pull --rebase origin main
 git checkout main
 git fetch origin
 git pull --rebase origin main
-git checkout -b hotfix-問題
+git checkout -b YYYYMMDD-hotfix-問題
 
 # 2. 修復問題並提交
 git add .
 git commit -m "[fix] 修復問題"
 
 # 3. 推送 hotfix 分支，並建立 PR 合併到 main
-git push -u origin hotfix/問題
+git push -u origin YYYYMMDD-hotfix-問題
 
 # 4. **(GitHub 上)** 建立 PR，請求合併到 main
 #    PR 審核通過後，main 會有最新修復
@@ -132,8 +132,8 @@ git rebase origin/main  # 避免 merge commit
 git push
 
 # 7. 刪除已合併的 hotfix 分支
-git branch -d hotfix/問題
-git push origin --delete hotfix/問題
+git branch -d YYYYMMDD-hotfix-問題
+git push origin --delete YYYYMMDD-hotfix-問題
 ```
 
 ### 精簡工作流程：部署到正式環境
