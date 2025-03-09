@@ -7,13 +7,9 @@ spring:
 
 eureka:
   instance:
-    hostname: 127.0.0.1
+    hostname: 127.0.0.1 # eureka 服務端實例名稱
   client:
-    register-with-eureka: false
-    fetch-registry: false
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: env
+    register-with-eureka: false # false 表示不向註冊中心註冊自己
+    fetch-registry: false # false 表示自己是註冊中心，負責維護微服務的實例
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eurekaservice/ # Eureka 服務器的 URL
