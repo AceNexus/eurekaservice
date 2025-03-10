@@ -198,7 +198,7 @@ docker build --no-cache --progress=plain -t eurekaservice .
 ### 啟動服務
 
 ```shell
-docker run -di --name=eurekaservice -p 8761:8761 eurekaservice
+docker run -di --name=eurekaservice --network tata-network -p 8761:8761 eurekaservice
 ```
 
 ### 確認服務啟動是否正常
