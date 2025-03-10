@@ -19,6 +19,8 @@
     - [啟動服務](#啟動服務)
     - [確認服務啟動是否正常](#確認服務啟動是否正常)
 
+---
+
 ## 概述
 
 - Eureka 是 **Spring Cloud Netflix** 提供的 **服務註冊與發現** 工具，負責管理微服務的註冊與查詢
@@ -30,16 +32,13 @@
 
 ## 參考資料
 
-### 官方文件
+- 官方文件：
+  - [Spring Guide - Service Registration and Discovery](https://spring.io/guides/gs/service-registration-and-discovery)
 
-- [Spring Guide - Service Registration and Discovery](https://spring.io/guides/gs/service-registration-and-discovery)
-
-### 相關文件
-
-- [**Spring Initializr（專案初始化）**](doc%2FSpringInitializr.png)
-    - Gradle (Kotlin) DSL：提供更嚴謹的類型安全與 IDE 自動補全
-- [截至 2025/3/3，Spring Boot 穩定版為 3.4.3](doc%2FSpringBoot_3.4.3_Docs_20250303.png)
-- [截至 2025/3/3，最新 Java LTS 版本為 Java SE 21](doc%2FJava_LTS_Versions_20250303.png)
+- 相關文件：
+  - [**Spring Initializr（專案初始化）**](doc%2FSpringInitializr.png)
+  - [截至 2025/3/3，Spring Boot 穩定版為 3.4.3](doc%2FSpringBoot_3.4.3_Docs_20250303.png)
+  - [截至 2025/3/3，最新 Java LTS 版本為 Java SE 21](doc%2FJava_LTS_Versions_20250303.png)
 
 ---
 
@@ -147,7 +146,7 @@ git pull --rebase origin main
 # 2. 為當前最新的 commit 打標籤
 git tag -a v0.0.1 -m "版本 0.0.1"
 
-# 3. 推送標籤到遠端倉庫
+# 3. 推送標籤到遠端倉庫，觸發 GitHub Actions
 git push origin --tags
 ```
 
