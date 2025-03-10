@@ -91,7 +91,7 @@ jobs:
             docker build --no-cache --progress=plain -t eurekaservice . || exit 1
             
             # 啟動新容器
-            docker run -d --name eurekaservice -p 8761:8761 eurekaservice || exit 1
+            docker run -d --name=eurekaservice --network tata-network -p 8761:8761 eurekaservice || exit 1
             
             # 等待一段時間，讓容器和服務完全啟動
             sleep 30

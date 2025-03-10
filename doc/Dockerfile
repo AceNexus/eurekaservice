@@ -8,7 +8,7 @@ WORKDIR /app
 COPY eurekaservice-*.jar /app/
 
 # 確保 JAR 檔案已成功複製
-RUN ls -la /app/
+RUN ls -la /app/ && ls -la /app/configservice-*.jar || echo "No JAR found!"
 
 # 建立指向最新 JAR 檔案的符號連結，確保一致的啟動方式
 RUN set -e && \
