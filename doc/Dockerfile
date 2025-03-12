@@ -16,7 +16,7 @@ RUN set -e && \
     echo "Latest JAR: $latest_jar" && \
     ln -sf "$latest_jar" /app/eurekaservice.jar
 
-# 設定 Spring Boot 啟動的環境變數，使用 "develop" 環境
+# 設定 Spring Boot 啟動的環境變數，使用 "dev" 環境
 ENV SPRING_PROFILES_ACTIVE=dev
 
 # HOST 設定應用程式的主機位址
