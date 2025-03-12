@@ -7,6 +7,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CONFIG_SERVER_URI: ${{ secrets.CONFIG_SERVER_URI }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -95,7 +97,7 @@ jobs:
             
             # 等待一段時間，讓容器和服務完全啟動
             sleep 30
-  
+            
             # 檢查容器是否正在運行
             if [ "$(docker ps -q -f name=eurekaservice)" ]; then
               echo "Container is running."
