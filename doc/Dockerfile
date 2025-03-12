@@ -16,11 +16,14 @@ RUN set -e && \
     echo "Latest JAR: $latest_jar" && \
     ln -sf "$latest_jar" /app/eurekaservice.jar
 
-# 設定 Spring Boot 啟動的環境變數，使用 "develop" 環境
-ENV SPRING_PROFILES_ACTIVE=develop
+# 設定 Spring Boot 啟動的環境變數，使用 "dev" 環境
+ENV SPRING_PROFILES_ACTIVE=dev
 
 # HOST 設定應用程式的主機位址
 ENV HOST=127.0.0.1
+
+# 設定 Config Server 的 URI，應用程式會從這個 URL 讀取配置
+ENV CONFIG_SERVER_URI=http://127.0.0.1:8888/configservice
 
 # 以 Java 啟動應用程式
 CMD ["java", "-jar", "/app/eurekaservice.jar"]

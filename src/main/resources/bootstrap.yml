@@ -2,6 +2,6 @@ spring:
   cloud:
     config:
       name: eurekaservice
-      profile: dev
+      profile: ${SPRING_PROFILES_ACTIVE:dev}
       uri: ${CONFIG_SERVER_URI:http://127.0.0.1:8888/configservice}
       fail-fast: true  # 如果連線失敗立即報錯
