@@ -50,19 +50,19 @@
 
 | 團隊類型       | 分支名稱      | 角色   | 主要用途      | 合併來源                   | 合併目標      |
 |------------|-----------|------|-----------|------------------------|-----------| 
-| **精簡工作流程** | `main`    | 正式環境 | 最終穩定版     | `develop`              | -         | 
-|            | `develop` | 開發環境 | 日常開發      | `feature/*`、`bugfix/*` | `main`    | 
+| **精簡工作流程** | `main`    | 正式環境 | 最終穩定版     | `dev`              | -         | 
+|            | `dev` | 開發環境 | 日常開發      | `feature/*`、`bugfix/*` | `main`    | 
 | **完整工作流程** | `main`    | 正式環境 | 最終穩定版     | `staging`              | -         | 
-|            | `staging` | 測試環境 | 測試開發完成的功能 | `develop`              | `main`    | 
-|            | `develop` | 開發環境 | 日常開發      | `feature/*`、`bugfix/*` | `staging` | 
+|            | `staging` | 測試環境 | 測試開發完成的功能 | `dev`              | `main`    | 
+|            | `dev` | 開發環境 | 日常開發      | `feature/*`、`bugfix/*` | `staging` | 
 
 ### 精簡工作流程：日常開發流程
 
 ```bash
-# 1. 確保 develop 分支是最新的
-git checkout develop
+# 1. 確保 dev 分支是最新的
+git checkout dev
 git fetch origin
-git pull --rebase origin develop
+git pull --rebase origin dev
 
 # 2. 創建功能分支
 git checkout -b YYYYMMDD-feature-新功能
@@ -73,24 +73,24 @@ git commit -m "[feat] 實現某功能"
 
 # 4. 在提交 PR 之前，確保分支是最新的
 git fetch origin
-git rebase origin/develop  # 避免不必要的合併提交
+git rebase origin/dev  # 避免不必要的合併提交
 
 # 5. 推送功能分支
 git push -u origin YYYYMMDD-feature-新功能
 
-# 6. 在 GitHub 上建立 PR，請求合併到 develop 分支
+# 6. 在 GitHub 上建立 PR，請求合併到 dev 分支
 #    (這步驟需要在 GitHub 上手動操作)
 
-# 7. PR 通過後，同步本地 develop
-git checkout develop
+# 7. PR 通過後，同步本地 dev
+git checkout dev
 git fetch origin
-git pull --rebase origin develop
+git pull --rebase origin dev
 
 # 8. 刪除已合併的功能分支
 git branch -d YYYYMMDD-feature-新功能
 git push origin --delete YYYYMMDD-feature-新功能
 
-# 9. 確保 develop 最新後，開 PR 合併到 main
+# 9. 確保 dev 最新後，開 PR 合併到 main
 #    (這步驟需要在 GitHub 上手動操作)
 
 # 10. PR 合併到 main 後，同步本地 main
@@ -123,10 +123,10 @@ git checkout main
 git fetch origin
 git pull --rebase origin main
 
-# 6. 同步修復到 develop
-git checkout develop
+# 6. 同步修復到 dev
+git checkout dev
 git fetch origin
-git pull --rebase origin develop
+git pull --rebase origin dev
 git rebase origin/main  # 避免 merge commit
 git push
 
