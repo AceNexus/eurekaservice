@@ -1,6 +1,13 @@
 # 使用 OpenJDK 21（Alpine 版）作為基礎映像，體積較小且適合容器化部署
 FROM eclipse-temurin:21-jre-alpine
 
+# 設定應用程式環境變數
+ENV HOST=127.0.0.1
+ENV SERVER_PORT=8761
+ENV SECURITY_USERNAME=admin
+ENV SECURITY_PASSWORD=password
+ENV SPRING_PROFILES_ACTIVE=dev
+
 # 設定工作目錄為 /app
 WORKDIR /app
 
@@ -18,9 +25,6 @@ RUN set -e && \
 
 # 設定 Spring Boot 啟動的環境變數，使用 "dev" 環境
 ENV SPRING_PROFILES_ACTIVE=dev
-
-# HOST 設定應用程式的主機位址
-ENV HOST=127.0.0.1
 
 # 設定 Config Server 的 URI，應用程式會從這個 URL 讀取配置
 ENV CONFIG_SERVER_URI=http://127.0.0.1:8888/configservice

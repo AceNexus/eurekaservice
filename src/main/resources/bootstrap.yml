@@ -3,5 +3,7 @@ spring:
     config:
       name: eurekaservice
       profile: ${SPRING_PROFILES_ACTIVE:dev}
-      uri: ${CONFIG_SERVER_URI:http://127.0.0.1:8888/configservice}
+      uri: ${CONFIG_SERVER_URI:http://127.0.0.1:8888}
+      username: ${SECURITY_USERNAME:admin}
+      password: ${SECURITY_PASSWORD:password}
       fail-fast: true  # 如果連線失敗立即報錯
