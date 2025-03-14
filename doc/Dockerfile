@@ -4,9 +4,12 @@ FROM eclipse-temurin:21-jre-alpine
 # 設定應用程式環境變數
 ENV HOST=127.0.0.1
 ENV SERVER_PORT=8761
+ENV CONFIG_SERVER_USERNAME=admin
+ENV CONFIG_SERVER_PASSWORD=password
 ENV SECURITY_USERNAME=admin
 ENV SECURITY_PASSWORD=password
 ENV SPRING_PROFILES_ACTIVE=dev
+ENV CONFIG_SERVER_URI=http://127.0.0.1:8888
 
 # 設定工作目錄為 /app
 WORKDIR /app
@@ -22,12 +25,6 @@ RUN set -e && \
     latest_jar=$(ls -t /app/eurekaservice-*.jar | head -n1) && \
     echo "Latest JAR: $latest_jar" && \
     ln -sf "$latest_jar" /app/eurekaservice.jar
-
-# 設定 Spring Boot 啟動的環境變數，使用 "dev" 環境
-ENV SPRING_PROFILES_ACTIVE=dev
-
-# 設定 Config Server 的 URI，應用程式會從這個 URL 讀取配置
-ENV CONFIG_SERVER_URI=http://127.0.0.1:8888/configservice
 
 # 以 Java 啟動應用程式
 CMD ["java", "-jar", "/app/eurekaservice.jar"]
