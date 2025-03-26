@@ -56,7 +56,7 @@ jobs:
             docker rm eurekaservice 2>/dev/null || true
             
             docker build -t eurekaservice . 
-            docker run -d --name eurekaservice -p 8888:8888 eurekaservice
+            docker run -d --name eurekaservice -p 8761:8761 eurekaservice
             
             docker ps | grep eurekaservice || { 
                 docker ps -a | grep eurekaservice
