@@ -1,6 +1,5 @@
 server:
   port: ${SERVER_PORT:8761}
-  shutdown: graceful
 
 spring:
   profiles:
@@ -11,8 +10,6 @@ spring:
     user:
       name: ${SECURITY_USERNAME:admin} # 身份驗證使用者名稱
       password: ${SECURITY_PASSWORD:password} # 身份驗證密碼
-  lifecycle:
-    timeout-per-shutdown-phase: 30s  # 設置關閉超時時間
 
 eureka:
   instance:
