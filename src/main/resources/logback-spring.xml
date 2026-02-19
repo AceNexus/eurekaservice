@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
+
+    <!-- 抑制 Eureka Jersey3 Client 在 Shutdown 時的已知 bug 日誌 (eureka-client-jersey3 2.0.4) -->
+    <logger name="com.netflix.discovery.shared.transport.jersey3" level="OFF" additivity="false"/>
+
+    <springProperty name="LOG_LEVEL_ROOT" source="logging.level.root" defaultValue="INFO"/>
+    <springProperty name="LOG_LEVEL_SECURITY" source="logging.level.org.springframework.security" defaultValue="WARN"/>
+
+    <logger name="org.springframework.security" level="${LOG_LEVEL_SECURITY}"/>
+
+    <root level="${LOG_LEVEL_ROOT}">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>

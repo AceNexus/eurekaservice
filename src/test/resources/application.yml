@@ -1,0 +1,26 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+      import-check:
+        enabled: false
+    bus:
+      enabled: false
+    service-registry:
+      auto-registration:
+        enabled: false
+  security:
+    user:
+      name: admin
+      password: password
+
+eureka:
+  instance:
+    hostname: 127.0.0.1
+  client:
+    should-unregister-on-shutdown: false
+
+management:
+  health:
+    rabbit:
+      enabled: false
