@@ -235,3 +235,44 @@ git push && git push --tags        # 4. Push
 - [Spring Cloud LoadBalancer 官方文件](https://docs.spring.io/spring-cloud-commons/docs/current/reference/html/#spring-cloud-loadbalancer)
 - [Spring Cloud Bus 官方文件](https://docs.spring.io/spring-cloud-bus/docs/current/reference/html/)
 - [RabbitMQ 管理指南](https://www.rabbitmq.com/management.html)
+
+---
+
+## 部署
+
+### 建立 K8s Secret
+
+```bash
+kubectl create secret generic eurekaservice-secret -n acenexus \
+  --from-literal=security-username=admin \
+  --from-literal=security-password=password \
+  --from-literal=config-server-username=admin \
+  --from-literal=config-server-password=password \
+  --from-literal=rabbitmq-username=admin \
+  --from-literal=rabbitmq-password=password
+```
+
+### 建置 Image
+
+```bash
+./gradlew bootJar
+docker build -t eurekaservice:local .
+```
+
+> Java 21 需要指定 JAVA_HOME：
+> ```powershell
+> $env:JAVA_HOME = 'C:\Users\User\.jdks\temurin-21.0.5'; .\gradlew bootJar
+> ```
+
+### 套用 K8s YAML
+
+```bash
+kubectl apply -f k8s/deployment.yaml -n acenexus
+kubectl get pods -n acenexus -w
+```
+
+### 本機存取（port-forward）
+
+```bash
+kubectl port-forward svc/eurekaservice 8761:8761 -n acenexus
+```
