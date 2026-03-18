@@ -153,7 +153,8 @@ environment:
    ```bash
    ./gradlew bootJar
    ```
-2. 將 `build/libs/eurekaservice.jar`、`docs/docker/Dockerfile`、`docs/docker/.dockerignore`、`docs/docker/docker-compose.yml`、`docs/docker/.env.example`
+2.
+將 `build/libs/eurekaservice.jar`、`docs/docker/Dockerfile`、`docs/docker/.dockerignore`、`docs/docker/docker-compose.yml`、`docs/docker/.env.example`
 複製到部署主機的同一目錄
 3. 將 `.env.example` 改名為 `.env`，填入實際的帳號密碼
 4. 在該目錄下啟動：
@@ -228,6 +229,41 @@ git push && git push --tags        # 4. Push
 | `docs`     | 文件更新      |
 | `test`     | 測試相關      |
 | `config`   | 配置檔變更     |
+
+## CI/CD
+
+Push 到 `main` branch 會自動觸發 GitHub Actions（`.github/workflows/ci.yml`）：
+
+```
+push to main
+  ↓
+[test]   gradle build（compile + test）
+  ↓ 通過
+[release] gradle bootJar
+          → docker build → Trivy 漏洞掃描（HIGH/CRITICAL 中止）
+          → push ghcr.io/acenexus/eurekaservice:<sha> + :latest
+          → 更新 deploy repo k8s/eurekaservice/deployment.yaml 的 image tag
+             → ArgoCD 偵測變動，自動部署至 K8s
+```
+
+### 必要設定：GitHub Secret
+
+release job 需要寫入 [AceNexus/deploy](https://github.com/AceNexus/deploy) repo，須在本 repo 設定：
+
+**Settings → Secrets and variables → Actions → New repository secret**
+
+| 名稱                | 說明                                                 |
+|-------------------|----------------------------------------------------|
+| `DEPLOY_REPO_PAT` | 擁有 `AceNexus/deploy` Contents:write 權限的 GitHub PAT |
+
+> PAT 建立：GitHub 右上角頭像 → Settings → Developer settings → Personal access tokens → Tokens (classic)，勾選 `repo` 權限。
+
+### 觸發 CI
+
+```bash
+git push          # push to main → 觸發 test + release
+# PR to main      → 僅觸發 test（不執行 release）
+```
 
 ## 參考資源
 
